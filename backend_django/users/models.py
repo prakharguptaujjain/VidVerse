@@ -6,14 +6,15 @@ from datetime import datetime, timedelta
 # ytb user model
 
 class User(models.Model):
-    email = models.CharField(max_length=20)
+    name= models.CharField(max_length=30)
+    email = models.CharField(max_length=50)
     password = models.CharField(max_length=20)
-    channel_id = models.CharField(max_length=20)
+    channel_id = models.CharField(max_length=40)
 
 class Cookie(models.Model):
-    email = models.CharField(max_length=20)
-    cookie = models.CharField(max_length=20)
-    expiry = models.CharField(max_length=20)
+    email = models.CharField(max_length=50)
+    cookie = models.CharField(max_length=40)
+    expiry = models.CharField(max_length=30)
 
     @staticmethod
     def create(email):

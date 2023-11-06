@@ -20,6 +20,7 @@ from users import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('signup/', views.signup),
-    path('login/', views.login),
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login, name='login'),
+    path('get_csrf_token/', views.get_csrf_token, name='get_csrf_token'),
 ]
