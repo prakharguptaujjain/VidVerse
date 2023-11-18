@@ -99,16 +99,28 @@ class Neo4jConnection:
 
         properties = ''
         for i in property:
-            properties += f"{i}: '{property[i].lower()}',"
+            if 'id' in i or 'Id' in i:
+                properties += f"{i}: '{property[i]}',"
+            else:
+                properties += f"{i}: '{property[i].lower()}',"
         properties = properties[:-1]
         properties = '{' + properties + '}'
 
         query = f"MATCH (n:{labels} {properties}) RETURN n"
+        print(query)
         nodes_final = None
         with self._driver.session() as session:
             nodes = session.run(query)
             nodes_final = list(nodes)
-        return nodes_final
+        
+        result = []
+        for i in nodes_final:
+            temp = {}
+            for j in i:
+                for k in j:
+                    temp[k] = j[k]
+            result.append(temp)
+        return result
     
     def exist(self, labels, property):
         """
@@ -130,7 +142,10 @@ class Neo4jConnection:
 
         properties = ''
         for i in property:
-            properties += f"{i}: '{property[i].lower()}',"
+            if 'id' in i or 'Id' in i:
+                properties += f"{i}: '{property[i]}',"
+            else:
+                properties += f"{i}: '{property[i].lower()}',"
         
         if properties != '':
             properties = properties[:-1]
@@ -166,7 +181,10 @@ class Neo4jConnection:
 
         properties = ''
         for i in property:
-            properties += f"{i}: '{property[i].lower()}',"
+            if 'id' in i or 'Id' in i:
+                properties += f"{i}: '{property[i]}',"
+            else:
+                properties += f"{i}: '{property[i].lower()}',"
         properties = properties[:-1]
         properties = '{' + properties + '}'
 
@@ -198,7 +216,10 @@ class Neo4jConnection:
 
         properties = ''
         for i in property:
-            properties += f"{i}: '{property[i].lower()}',"
+            if 'id' in i or 'Id' in i:
+                properties += f"{i}: '{property[i]}',"
+            else:
+                properties += f"{i}: '{property[i].lower()}',"
 
         if properties != '':
             properties = properties[:-1]
@@ -222,8 +243,11 @@ class Neo4jConnection:
         label2 = ':'.join(label2)
 
         properties1 = ''
-        for i in property1:
-            properties1 += f"{i}: '{property1[i].lower()}',"
+        for i in property:
+            if 'id' in i or 'Id' in i:
+                properties += f"{i}: '{property[i]}',"
+            else:
+                properties += f"{i}: '{property[i].lower()}',"
         properties1 = properties1[:-1]
         properties1 = '{' + properties1 + '}'
 
@@ -240,4 +264,6 @@ class Neo4jConnection:
 # site = Neo4jConnection("bolt://localhost:7687", "neo4j", "1234567890")
 
 # site.connect()
+# res = site.search("Video", {"id": '-0ziqk9cZRM'})
+# print(res)
 # site.close()
