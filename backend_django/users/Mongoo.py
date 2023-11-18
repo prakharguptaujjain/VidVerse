@@ -52,7 +52,8 @@ def search(s: str):
             "_id": x.get("_id"),
             "title": x.get("videoInfo").get("snippet").get("title"),
             "channelTitle": x.get("videoInfo").get("snippet").get("channelTitle"),
-            "thumbnails": x.get("videoInfo").get("snippet").get("thumbnails")
+            "thumbnails": x.get("videoInfo").get("snippet").get("thumbnails"),
+            "videoId": x.get("videoInfo").get("id")
         }
         res.append(temp)
     return res
