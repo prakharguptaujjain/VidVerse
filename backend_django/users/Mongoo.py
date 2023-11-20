@@ -54,7 +54,8 @@ def search(s: str):
             "channelTitle": x.get("videoInfo").get("snippet").get("channelTitle"),
             "thumbnails": x.get("videoInfo").get("snippet").get("thumbnails"),
             "videoId": x.get("videoInfo").get("id"),
-            "statistics": x.get("videoInfo").get("statistics")
+            "statistics": x.get("videoInfo").get("statistics"),
+            "tags": x.get("videoInfo").get("snippet").get("tags")
         }
         res.append(temp)
     return res
@@ -132,7 +133,8 @@ def get_video(videoId):
         "videoInfo.snippet.channelTitle": 1,
         "videoInfo.snippet.thumbnails": 1,
         "videoInfo.id": 1,
-        "videoInfo.statistics": 1
+        "videoInfo.statistics": 1,
+        "videoInfo.snippet.tags": 1
     }
 
     results = collection.find(query, projection)
@@ -144,7 +146,8 @@ def get_video(videoId):
             "channelTitle": x.get("videoInfo").get("snippet").get("channelTitle"),
             "thumbnails": x.get("videoInfo").get("snippet").get("thumbnails"),
             "videoId": x.get("videoInfo").get("id"),
-            "statistics": x.get("videoInfo").get("statistics")
+            "statistics": x.get("videoInfo").get("statistics"),
+            "tags": x.get("videoInfo").get("snippet").get("tags")
         }
         res.append(temp)
     return res
