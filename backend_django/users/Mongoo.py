@@ -53,7 +53,8 @@ def search(s: str):
             "title": x.get("videoInfo").get("snippet").get("title"),
             "channelTitle": x.get("videoInfo").get("snippet").get("channelTitle"),
             "thumbnails": x.get("videoInfo").get("snippet").get("thumbnails"),
-            "videoId": x.get("videoInfo").get("id")
+            "videoId": x.get("videoInfo").get("id"),
+            "statistics": x.get("videoInfo").get("statistics")
         }
         res.append(temp)
     return res
@@ -113,3 +114,39 @@ def undislike(video):
     document = collection.find_one({"_id": video["_id"]})
     collection.update_one({"_id": video["_id"]}, {"$set": {"videoInfo.statistics.dislikeCount": int(document.get("videoInfo").get("statistics").get("dislikeCount")) - 1}})
     return
+
+def get_video(videoId):
+    """
+    Get videos from the database for a given videoId and returns a list of results
+    """
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["VidVerse"]
+    collection = db["videos"]
+
+    query = {
+        "videoInfo.id": videoId
+    }
+    projection = {
+        "_id": 1,
+        "videoInfo.snippet.title": 1,
+        "videoInfo.snippet.channelTitle": 1,
+        "videoInfo.snippet.thumbnails": 1,
+        "videoInfo.id": 1,
+        "videoInfo.statistics": 1
+    }
+
+    results = collection.find(query, projection)
+    res = []
+    for x in results:
+        temp = {
+            "_id": x.get("_id"),
+            "title": x.get("videoInfo").get("snippet").get("title"),
+            "channelTitle": x.get("videoInfo").get("snippet").get("channelTitle"),
+            "thumbnails": x.get("videoInfo").get("snippet").get("thumbnails"),
+            "videoId": x.get("videoInfo").get("id"),
+            "statistics": x.get("videoInfo").get("statistics")
+        }
+        res.append(temp)
+    return res
+
+# print(get_video("-0ziqk9cZRM"))
