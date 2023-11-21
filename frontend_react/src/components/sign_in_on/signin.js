@@ -54,6 +54,9 @@ function SignInForm() {
               setNotify((prev) => ({ ...prev, open: false }));
             },
           });
+          var cookie=res.data.cookie;
+          Cookies.set('cookie', cookie);
+
           // redirect to home page
           window.location.href = "/home";
         }

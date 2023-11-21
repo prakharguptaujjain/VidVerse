@@ -5,7 +5,6 @@ import Signinon from "./routes/sign_in_on";
 import Home from "./routes/home";
 import Layout from "./routes/default";
 import React, { useState } from "react";
-import CustomSnackbar from "./components/snack_bar/toast";
 
 function App() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);

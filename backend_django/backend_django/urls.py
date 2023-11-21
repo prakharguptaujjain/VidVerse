@@ -23,4 +23,14 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login, name='login'),
     path('get_csrf_token/', views.get_csrf_token, name='get_csrf_token'),
+    path('content/new/', views.Contents.new, name='new_content'),
+    path('content/trending/', views.Contents.trending, name='trending_content'),
+    path('content/search/', views.Contents.search, name='search_content'),
+    path('content/liked_videos/', views.Contents.liked_videos, name='liked_videos'),
+    path('content/subscribed/', views.Contents.subscribed, name='subscribe'),
+    path('user_video_interaction/', views.user_video_interaction, name='user_video_interaction'),
+    path('user_channel_interaction/', views.user_channel_interaction, name='user_channel_interaction'),
+    path('creator/', views.creator_dashboard, name='channel_dashboard'),
+    path('advertiser/', views.advertiser_dashboard, name='advertiser_dashboard'),
+    path('video_info/', views.video_info, name='video_info')
 ]
