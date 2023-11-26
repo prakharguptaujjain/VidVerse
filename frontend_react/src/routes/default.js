@@ -16,9 +16,14 @@ const Layout = () => {
                 <h1 style={{ color: "red" }}>home</h1>
               </Link>
             </li>
+            <li>
+              <Link to="/video">
+                <h1 style={{ color: "red" }}>video player</h1>
+              </Link>
+            </li>
           </ul>
         </nav>
-  
+
         <Outlet />
       </>
     );

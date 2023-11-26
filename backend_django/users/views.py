@@ -8,6 +8,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from uuid import uuid4
 from datetime import datetime, timedelta
 import json
+import Mongoo
+import Neo4j
+import Mysql
 
 @ensure_csrf_cookie
 def get_csrf_token(request):
@@ -89,15 +92,19 @@ def user_video_interaction(request):
 
     if like_video:
         Liked_Diliked_Video.objects.create(email_id, video_id=video_id, liked=True)
+        Mongoo.like(video_id)
 
     if unlike_video:
         Liked_Diliked_Video.objects.filter(email_id, video_id=video_id).delete()
+        Mongoo.unlike(video_id)
 
     if dislike_video:
         Liked_Diliked_Video.objects.create(email_id, video_id=video_id, disliked=True)
+        Mongoo.dislike(video_id)
 
     if undislike_video:
         Liked_Diliked_Video.objects.filter(email_id, video_id=video_id).delete()
+        Mongoo.undislike(video_id)
 
     if not video_id:
         return JsonResponse({'status': 400, 'message': 'Video id is required'})
@@ -135,6 +142,7 @@ def user_channel_interaction(request):
     if not channel_id:
         return JsonResponse({'status': 400, 'message': 'Channel id is required'})
 
+@csrf_exempt
 def creator_dashboard(request):
     data=json.loads(request.body.decode('utf-8'))
     cookie=data.get('cookie')
@@ -145,6 +153,7 @@ def creator_dashboard(request):
     
     channel_id=User.objects.filter(cookie=cookie).channel_id
 
+@csrf_exempt
 def advertiser_dashboard(request):
     data=json.loads(request.body.decode('utf-8'))
     cookie=data.get('cookie')
@@ -155,31 +164,39 @@ def advertiser_dashboard(request):
     
     advertiser_id=User.objects.filter(cookie=cookie).advertiser_id
 
+@csrf_exempt
 def video_info(request):
     data=json.loads(request.body.decode('utf-8'))
     video_id=data.get('video_id',None)
     if not video_id:
         return JsonResponse({'status': 400, 'message': 'Video id is required'})
+    
+    return_data = Mongoo.get_video(video_id)
+    return JsonResponse({'status': 200, 'message': 'Success', 'data': return_data})
 
 class Contents:
     @staticmethod
+    @csrf_exempt
     def new(request):
         data=json.loads(request.body.decode('utf-8'))
         tag=data.get('tag',None)
         searchTerm=data.get('searchTerm',None)
         num=data.get('num',20)
 
+    @csrf_exempt
     def trending(request):
         data=json.loads(request.body.decode('utf-8'))
         tag=data.get('tag',None)
         searchTerm=data.get('searchTerm',None)
         num=data.get('num',20)
 
+    @csrf_exempt
     def search(request):
         data=json.loads(request.body.decode('utf-8'))
         searchTerm=data.get('searchTerm',None)
         num=data.get('num',20)
-
+        
+    @csrf_exempt
     def liked_videos(request):
         data=json.loads(request.body.decode('utf-8'))
         cookie=data.get('cookie',None)
@@ -202,7 +219,23 @@ class Contents:
             })
 
         return JsonResponse({'status': 200, 'message': 'Success', 'data': return_data})
+    
+    @csrf_exempt
+    def history(request):
+        data=json.loads(request.body.decode('utf-8'))
+        cookie=data.get('cookie',None)
+        num=data.get('num',20)
 
+        email_id=Cookie.cookie_check(cookie)
+        if not email_id:
+            return JsonResponse({'status': 303, 'message': 'Cookie does not exist'})
+        
+        history_data = Mysql.search('click_through_search',{'user_id':email_id})
+        return_data=history_data
+        
+        return 
+
+    @csrf_exempt
     def subscribed(request):
         data=json.loads(request.body.decode('utf-8'))
         cookie=data.get('cookie',None)
@@ -222,3 +255,39 @@ class Contents:
             })
         
         return JsonResponse({'status': 200, 'message': 'Success', 'data': return_data})
+
+class Analytics:
+    @csrf_exempt
+    def video_opened(request):
+        data=json.loads(request.body.decode('utf-8'))
+        cookie=data.get('cookie',None)
+        video_id=data.get('video_id',None)
+        time=data.get('time',None)
+        search_query=data.get('search_query',None)
+        video_rank=data.get('video_rank',None)
+
+        email_id=Cookie.cookie_check(cookie)
+        if not email_id:
+            return JsonResponse({'status': 303, 'message': 'Cookie does not exist'})
+
+        # create click_through_search
+        Mysql.insert('click_through_search', {'user_id': email_id, 'video_id': video_id, 'timestamp': time, 'search_query': search_query,'ranked': video_rank})
+
+        return JsonResponse({'status': 200, 'message': 'Success'})
+
+    @csrf_exempt
+    def ad_opened(request):
+        data=json.loads(request.body.decode('utf-8'))
+        cookie=data.get('cookie',None)
+        ad_id=data.get('ad_id',None)
+        video_id=data.get('video_id',None)
+        time=data.get('time',None)
+
+        email_id=Cookie.cookie_check(cookie)
+        if not email_id:
+            return JsonResponse({'status': 303, 'message': 'Cookie does not exist'})
+        
+        # create click_through_ad
+        Mysql.insert('click_through_ad', {'user_id': email_id, 'ad_id': ad_id, 'video_id': video_id, 'timestamp': time})
+        
+        return JsonResponse({'status': 200, 'message': 'Success'})

@@ -14,6 +14,8 @@ cur = myConnection.cursor()
 def insert(table, data):
     """
     Insert data into table
+
+    table = click_through_search, click_through_ad
     """
     cur.execute(f"describe {table}")
     res = cur.fetchall()

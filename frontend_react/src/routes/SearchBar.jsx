@@ -2,19 +2,25 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Paper, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import axios from "axios";
+import { videos_lists } from "../utils/sample";
 
-const SearchBar = () => {
+const SearchBar = ({ setVideos, setSelectedCategory }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
 
   const onhandleSubmit = (e) => {
     e.preventDefault();
-
-    if (searchTerm) {
-      navigate(`/search/${searchTerm}`);
-
-      setSearchTerm("");
-    }
+    setSelectedCategory('Search')
+    setVideos(
+      // axios
+      //   .get("address : http://localhost:8000/content/", {
+      //     tag: "Search",
+      //     searchTerm: searchTerm,
+      //     num: 20,
+      //   })
+      //   .then((res) => res.data)
+      videos_lists['Search']
+    );
   };
 
   return (

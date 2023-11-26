@@ -128,3 +128,26 @@ a {
   }
 
 }
+.infoContainer{
+  display: table-row;
+  width: 100vw;
+}
+
+.info{
+  display: table-cell;
+  width: 33vw;
+  text-align: center;
+}
+
+.info h2{
+  color: aliceblue;
+}
+
+.info h4{
+  color: whitesmoke;
+}
+
+.chart{
+  text-align: center;
+  color: white;
+}

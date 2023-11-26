@@ -46,6 +46,8 @@ function SignInForm() {
 
         const message = res.data.message;
         if (res.data.status === 200 || res.data.status === 201) {
+          const cookie = res.data.cookie;
+          Cookies.set("user", cookie);
           setNotify({
             open: true,
             message: message,
@@ -54,9 +56,6 @@ function SignInForm() {
               setNotify((prev) => ({ ...prev, open: false }));
             },
           });
-          var cookie=res.data.cookie;
-          Cookies.set('cookie', cookie);
-
           // redirect to home page
           window.location.href = "/home";
         }

@@ -51,7 +51,7 @@ function SignUpForm() {
             if (res.data.status===200 || res.data.status===201)
             {
               const cookie= res.data.cookie;
-              Cookies.set("cookie", cookie);
+              Cookies.set("user", cookie);
             setNotify({
                 open: true,
                 message: message,
